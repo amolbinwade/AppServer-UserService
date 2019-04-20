@@ -17,6 +17,16 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+	
+	<distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>userService</id>
+      <name>UserService Repository</name>
+      <url>scp://Home/codeRepo/Repository</url>
+      <layout>default</layout>
+    </repository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -37,6 +47,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>AppServer</groupId>
+			<artifactId>ServiceDTO</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
