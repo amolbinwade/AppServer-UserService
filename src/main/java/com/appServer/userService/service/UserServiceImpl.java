@@ -1,7 +1,12 @@
 package com.appServer.userService.service;
 
+
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +19,16 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
+	ModelMapper	 modelMapper;
+	
+	static Logger log = LogManager.getLogger();
 
 	@Override
 	@Transactional
 	public void createUser(UserDTO user) {
-		User u = new User();
-		u.setFirstName(user.getFirstName());
-		u.setLastName(user.getLastName());
-		u.setMiddleName(user.getMiddleName());
-		
+		User u = this.convertToEntity(user);		
 		userRepo.save(u);
 	}
 
@@ -42,6 +48,18 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(Long id) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	private User convertToEntity(UserDTO userDTO) {
+		User u;
+		log.log(Level.INFO, "Parsing UserDTO");
+		try{
+			u = modelMapper.map(userDTO, User.class);
+		} catch(Exception e){
+			log.log(Level.ERROR, "Error in parsing UserDTO."); 
+			throw e;
+		}
+		return u;
 	}
 
 }
