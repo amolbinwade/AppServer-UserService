@@ -1,14 +1,18 @@
 package com.appServer.userService.service;
 
+import java.util.List;
+
 import com.appServer.userService.dto.UserDTO;
 
 public interface UserService {
 	
-	public void createUser(UserDTO user);
+	public UserDTO createUser(UserDTO user);
 	
 	public UserDTO getUserById(Long id);
 	
-	public void updateUser(UserDTO user);
+	public UserDTO updateUser(UserDTO user);
 	
 	public void deleteUser(Long id);
+	
+	public List<UserDTO> getUsers();
 }
