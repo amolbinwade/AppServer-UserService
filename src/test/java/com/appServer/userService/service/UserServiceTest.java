@@ -102,5 +102,13 @@ public class UserServiceTest {
 		userService.deleteUser(user.getId());
 		userService.getUserById(user.getId());
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testCreateUserValidation(){
+		UserDTO user = new UserDTO();
+		user.setFirstName("Sharvi");
+		user.setLastName("");
+		user = userService.createUser(user);
+	}
 
 }

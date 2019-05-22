@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
+import com.appServer.userService.Exception.UserApplicationException;
 import com.appServer.userService.dto.UserDTO;
 import com.appServer.userService.entity.User;
 import com.appServer.userService.errorcodes.UserServiceErrorCodes;
@@ -33,10 +35,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly=false)
 	public UserDTO createUser(UserDTO user) {
+		try{
+		this.validateMandatoryfields(user);
 		User u = this.convertToEntity(user);		
 		userRepo.save(u);
-		return this.convertToDTO(u);
-	}
+		user = this.convertToDTO(u);
+		} catch(Exception e){
+			log.error("Error in creating User", e);
+			throw new UserApplicationException(e.getMessage());
+		}
+		return user;
+	}	
 
 	@Override
 	@Transactional(readOnly=false)
@@ -105,7 +114,13 @@ public class UserServiceImpl implements UserService {
 		}
 		return u;
 	}
-
 	
+	private void validateMandatoryfields(UserDTO user) {
+		Assert.notNull(user,UserServiceErrorCodes.USER_DATA_NOT_PROVIDED.getValue());
+		if(StringUtils.isEmpty(user.getFirstName())
+				|| StringUtils.isEmpty(user.getLastName())){
+			throw new UserApplicationException(UserServiceErrorCodes.USER_REQUIRED_FIELD_PROVIDED.getValue());
+		}
+	}
 
 }
