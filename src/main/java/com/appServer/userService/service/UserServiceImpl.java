@@ -40,9 +40,12 @@ public class UserServiceImpl implements UserService {
 		User u = this.convertToEntity(user);		
 		userRepo.save(u);
 		user = this.convertToDTO(u);
-		} catch(Exception e){
+		} catch(UserApplicationException e){
 			log.error("Error in creating User", e);
-			throw new UserApplicationException(e.getMessage());
+			throw e;
+		} catch(Exception e){
+			log.error("Error in creating user", e.getMessage());
+			throw e;
 		}
 		return user;
 	}	
@@ -50,9 +53,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly=false)
 	public UserDTO getUserById(Long id) {
-		Assert.notNull(id, UserServiceErrorCodes.USER_ID_NOT_PROVIDED.getValue());
+		if(id == null){
+			throw new UserApplicationException(UserServiceErrorCodes.USER_ID_NOT_PROVIDED);
+		}
 		User u = userRepo.findById(id).orElse(null);
-		Assert.notNull(u, UserServiceErrorCodes.USER_ID_NOT_EXIST.getValue());
+		if(u == null){
+			throw new UserApplicationException(UserServiceErrorCodes.USER_ID_NOT_EXIST);
+		}
 		return this.convertToDTO(u);
 		
 	}
@@ -116,10 +123,10 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private void validateMandatoryfields(UserDTO user) {
-		Assert.notNull(user,UserServiceErrorCodes.USER_DATA_NOT_PROVIDED.getValue());
-		if(StringUtils.isEmpty(user.getFirstName())
+		if(user == null 
+				|| StringUtils.isEmpty(user.getFirstName())
 				|| StringUtils.isEmpty(user.getLastName())){
-			throw new UserApplicationException(UserServiceErrorCodes.USER_REQUIRED_FIELD_PROVIDED.getValue());
+			throw new UserApplicationException(UserServiceErrorCodes.USER_REQUIRED_FIELD_NOT_PROVIDED);
 		}
 	}
 

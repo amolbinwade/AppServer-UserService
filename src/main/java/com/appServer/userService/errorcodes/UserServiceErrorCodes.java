@@ -5,7 +5,7 @@ public enum UserServiceErrorCodes {
 USER_ID_NOT_PROVIDED(101, "User ID is null or blank."), 
 USER_ID_NOT_EXIST(102, "User ID not exist."), 
 USER_DATA_NOT_PROVIDED(103, "User data not provided"),
-USER_REQUIRED_FIELD_PROVIDED(103, "User's required field(s) not provided");
+USER_REQUIRED_FIELD_NOT_PROVIDED(103, "User required field(s) not provided");
 	
 	private int code;
 	private String desc;
