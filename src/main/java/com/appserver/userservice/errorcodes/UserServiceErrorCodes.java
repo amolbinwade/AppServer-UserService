@@ -1,4 +1,4 @@
-package com.appServer.userService.errorcodes;
+package com.appserver.userservice.errorcodes;
 
 public enum UserServiceErrorCodes {
 

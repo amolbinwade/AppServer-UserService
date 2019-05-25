@@ -1,4 +1,4 @@
-package com.appServer.userService.service;
+package com.appserver.userservice.service;
 
 
 import java.util.ArrayList;
@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.appServer.userService.Exception.UserApplicationException;
 import com.appServer.userService.dto.UserDTO;
-import com.appServer.userService.entity.User;
-import com.appServer.userService.errorcodes.UserServiceErrorCodes;
-import com.appServer.userService.repository.UserRepository;
+import com.appserver.userservice.entity.User;
+import com.appserver.userservice.errorcodes.UserServiceErrorCodes;
+import com.appserver.userservice.exception.UserApplicationException;
+import com.appserver.userservice.repository.UserRepository;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -67,9 +67,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly=false)
 	public UserDTO updateUser(UserDTO user) {
-		Assert.notNull(user,UserServiceErrorCodes.USER_DATA_NOT_PROVIDED.getValue());
+		if(user == null || user.getId()==null){
+			throw new UserApplicationException(UserServiceErrorCodes.USER_ID_NOT_PROVIDED);
+		}
 		User u = userRepo.findById(user.getId()).orElse(null);
-		Assert.notNull(u, UserServiceErrorCodes.USER_ID_NOT_EXIST.getValue());
+		if(u == null){
+			throw new UserApplicationException(UserServiceErrorCodes.USER_ID_NOT_EXIST);
+		}
 		modelMapper.map(user, u);
 		userRepo.save(u);
 		return user;

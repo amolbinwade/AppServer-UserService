@@ -1,6 +1,6 @@
-package com.appServer.userService.Exception;
+package com.appserver.userservice.exception;
 
-import com.appServer.userService.errorcodes.UserServiceErrorCodes;
+import com.appserver.userservice.errorcodes.UserServiceErrorCodes;
 
 public class UserApplicationException extends RuntimeException {
 

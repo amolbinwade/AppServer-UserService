@@ -1,4 +1,4 @@
-package com.appServer.userService.service;
+package com.appserver.userservice.service;
 
 import java.util.List;
 

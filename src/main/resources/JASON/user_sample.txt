@@ -1,0 +1,14 @@
+{
+  "firstName": "Amol",
+  "lastName": "Binwade",
+  "userId": "amolbinwade",
+  "userType": "SUPER_USER",
+  "homeAddress": {
+    "line1": "Kharadi",
+    "line2": "Pune",
+    "city": "Pune",
+    "state": "MH",
+    "pincode": "411014",
+    "country": "India"
+  }
+}

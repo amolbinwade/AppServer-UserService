@@ -1,4 +1,4 @@
-package com.appServer.userService.repository;
+package com.appserver.userservice.repository;
 
 import static org.junit.Assert.*;
 
@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.appServer.userService.UserServiceApplication;
-import com.appServer.userService.entity.User;
+import com.appserver.userservice.UserServiceApplication;
+import com.appserver.userservice.entity.User;
+import com.appserver.userservice.repository.UserRepository;
 
 import junit.framework.Assert;
 

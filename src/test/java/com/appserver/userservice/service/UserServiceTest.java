@@ -1,4 +1,4 @@
-package com.appServer.userService.service;
+package com.appserver.userservice.service;
 
 import static org.junit.Assert.*;
 
@@ -11,10 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.appServer.userService.UserServiceApplication;
+import com.appServer.userService.dto.AddressDTO;
 import com.appServer.userService.dto.UserDTO;
-import com.appServer.userService.entity.User;
-import com.appServer.userService.repository.UserRepository;
+import com.appserver.userservice.UserServiceApplication;
+import com.appserver.userservice.constants.UserTypeEnum;
+import com.appserver.userservice.entity.User;
+import com.appserver.userservice.exception.UserApplicationException;
+import com.appserver.userservice.repository.UserRepository;
+import com.appserver.userservice.service.UserService;
 
 import junit.framework.Assert;
 
@@ -38,6 +42,19 @@ public class UserServiceTest {
 		UserDTO user = new UserDTO();
 		user.setFirstName("Kiran");
 		user.setLastName("Binwade");
+		user.setEmailId("kiranbinwade@gmail.com");
+		user.setUserId("kiranbinwade");
+		user.setUserType(UserTypeEnum.SUPER_USER.name());
+		
+		AddressDTO homeAddress = new AddressDTO();
+		homeAddress.setCity("Pune");
+		homeAddress.setLine1("First Society");
+		homeAddress.setLine2("Apartment 41");
+		homeAddress.setPincode("411014");
+		homeAddress.setState("Maharashtra");
+		homeAddress.setCountry("India");
+		
+		user.setHomeAddress(homeAddress);
 		userService.createUser(user);
 		
 		String fName = "";
@@ -93,7 +110,7 @@ public class UserServiceTest {
 		Assert.assertEquals(3, users.size());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=UserApplicationException.class)
 	public void testDeleteUser(){
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");
@@ -103,7 +120,7 @@ public class UserServiceTest {
 		userService.getUserById(user.getId());
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=UserApplicationException.class)
 	public void testCreateUserValidation(){
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");

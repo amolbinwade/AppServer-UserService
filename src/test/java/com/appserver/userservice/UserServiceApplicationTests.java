@@ -1,4 +1,4 @@
-package com.appServer.userService;
+package com.appserver.userservice;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
