@@ -3,13 +3,16 @@ package com.appserver.userservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -18,6 +21,7 @@ import org.springframework.util.StringUtils;
 import com.appServer.userService.dto.UserDTO;
 import com.appserver.userservice.entity.User;
 import com.appserver.userservice.errorcodes.UserServiceErrorCodes;
+import com.appserver.userservice.exception.ReqDataMissingApplicationException;
 import com.appserver.userservice.exception.UserApplicationException;
 import com.appserver.userservice.repository.UserRepository;
 
@@ -30,6 +34,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	ModelMapper	 modelMapper;
 	
+	public static final int DEFAULT_PAGESIZE = 10;
+	
 	static Logger log = LogManager.getLogger();
 
 	@Override
@@ -38,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		try{
 		this.validateMandatoryfields(user);
 		User u = this.convertToEntity(user);		
-		userRepo.save(u);
+		u = userRepo.save(u);
 		user = this.convertToDTO(u);
 		} catch(UserApplicationException e){
 			log.error("Error in creating User", e);
@@ -93,12 +99,17 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional(readOnly=false)
-	public List<UserDTO> getUsers() {
-		Iterable<User> users = userRepo.findAll();
-		List<UserDTO> userDTOs = new ArrayList<>();
-		for(User u:users){
-			userDTOs.add(modelMapper.map(u, UserDTO.class));
+	public List<UserDTO> getUsers(int pageSize, int pageNum){
+		if(pageSize == 0){
+			pageSize = DEFAULT_PAGESIZE;
 		}
+		List<UserDTO> userDTOs = new ArrayList<>();
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		Page<User> usersPage = userRepo.findAll(pageable);
+		userDTOs = (List<UserDTO>) usersPage.get()
+				.map(user -> {return modelMapper.map(user, UserDTO.class);})
+				.collect(Collectors.toList());
+		
 		return userDTOs;
 	}
 	
@@ -126,12 +137,37 @@ public class UserServiceImpl implements UserService {
 		return u;
 	}
 	
-	private void validateMandatoryfields(UserDTO user) {
-		if(user == null 
-				|| StringUtils.isEmpty(user.getFirstName())
-				|| StringUtils.isEmpty(user.getLastName())){
-			throw new UserApplicationException(UserServiceErrorCodes.USER_REQUIRED_FIELD_NOT_PROVIDED);
+	private void validateMandatoryfields(UserDTO user) {		
+		List<String> missingFields = new ArrayList<>();
+		boolean isMissing = false;
+		if(user == null){
+			isMissing = true;
+			throw new UserApplicationException(UserServiceErrorCodes.USER_DATA_NOT_PROVIDED);
+		} 
+		
+		if(StringUtils.isEmpty(user.getFirstName())){
+			isMissing = true;
+			missingFields.add("FIRST_NAME");
 		}
-	}
+		if(StringUtils.isEmpty(user.getLastName())){
+			isMissing = true;
+			missingFields.add("LAST_NAME");
+		}
+		if(StringUtils.isEmpty(user.getUserId())){
+			isMissing = true;
+			missingFields.add("USER_ID");
+		}
+		if(StringUtils.isEmpty(user.getEmailId())){
+			isMissing = true;
+			missingFields.add("EMAIL_ID");
+		}
+		
+		if(isMissing){
+			ReqDataMissingApplicationException ex 
+			= new ReqDataMissingApplicationException(UserServiceErrorCodes.USER_REQUIRED_FIELD_NOT_PROVIDED);
+			missingFields.forEach(field -> ex.addMissingField(field));
+			throw ex;
+		}
+	}	
 
 }

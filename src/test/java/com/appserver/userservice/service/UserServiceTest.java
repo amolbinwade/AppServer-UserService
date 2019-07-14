@@ -16,6 +16,7 @@ import com.appServer.userService.dto.UserDTO;
 import com.appserver.userservice.UserServiceApplication;
 import com.appserver.userservice.constants.UserTypeEnum;
 import com.appserver.userservice.entity.User;
+import com.appserver.userservice.exception.ReqDataMissingApplicationException;
 import com.appserver.userservice.exception.UserApplicationException;
 import com.appserver.userservice.repository.UserRepository;
 import com.appserver.userservice.service.UserService;
@@ -67,11 +68,38 @@ public class UserServiceTest {
 		Assert.assertEquals("Kiran", fName);
 	}
 	
+	@Test(expected=ReqDataMissingApplicationException.class)
+	public void testCreateUserMissingFields() {
+		UserDTO user = new UserDTO();
+		user.setFirstName("Kiran");
+		user.setUserId("kiranbinwade");
+		user.setUserType(UserTypeEnum.SUPER_USER.name());
+		
+		AddressDTO homeAddress = new AddressDTO();
+		homeAddress.setCity("Pune");
+		homeAddress.setLine1("First Society");
+		homeAddress.setLine2("Apartment 41");
+		homeAddress.setPincode("411014");
+		homeAddress.setState("Maharashtra");
+		homeAddress.setCountry("India");
+		
+		user.setHomeAddress(homeAddress);
+		try{
+		userService.createUser(user);
+		} catch(ReqDataMissingApplicationException ex){
+			ex.getMissingFields().forEach(field -> System.out.println(field));
+			throw ex;
+		}		
+		
+	}
+	
 	@Test
 	public void testGetUser(){
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");
 		user.setLastName("Binwade");
+		user.setEmailId("kiranbinwade@gmail.com");
+		user.setUserId("kiranbinwade");
 		user = userService.createUser(user);
 		UserDTO user2 = userService.getUserById(user.getId());
 		Assert.assertEquals(user.getId(), user2.getId());
@@ -82,6 +110,8 @@ public class UserServiceTest {
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");
 		user.setLastName("Binwade");
+		user.setEmailId("kiranbinwade@gmail.com");
+		user.setUserId("kiranbinwade");
 		user = userService.createUser(user);
 		user.setFirstName("Amol");
 		UserDTO user2 = userService.updateUser(user);
@@ -93,19 +123,25 @@ public class UserServiceTest {
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");
 		user.setLastName("Binwade");
+		user.setEmailId("kiranbinwade@gmail.com");
+		user.setUserId("kiranbinwade");
 		user = userService.createUser(user);
 		
 		UserDTO user2 = new UserDTO();
 		user2.setFirstName("Amol");
 		user2.setLastName("Binwade");
+		user2.setEmailId("kiranbinwade@gmail.com");
+		user2.setUserId("kiranbinwade");
 		user2 = userService.createUser(user2);
 		
 		UserDTO user3 = new UserDTO();
 		user3.setFirstName("Shweta");
 		user3.setLastName("Binwade");
+		user3.setEmailId("kiranbinwade@gmail.com");
+		user3.setUserId("kiranbinwade");
 		user3 = userService.createUser(user3);
 		
-		List<UserDTO> users = userService.getUsers();
+		List<UserDTO> users = userService.getUsers(0, 0);
 		
 		Assert.assertEquals(3, users.size());
 	}
@@ -115,6 +151,8 @@ public class UserServiceTest {
 		UserDTO user = new UserDTO();
 		user.setFirstName("Sharvi");
 		user.setLastName("Binwade");
+		user.setEmailId("kiranbinwade@gmail.com");
+		user.setUserId("kiranbinwade");
 		user = userService.createUser(user);
 		userService.deleteUser(user.getId());
 		userService.getUserById(user.getId());

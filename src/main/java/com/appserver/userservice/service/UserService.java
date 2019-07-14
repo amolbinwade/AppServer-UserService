@@ -14,5 +14,5 @@ public interface UserService {
 	
 	public void deleteUser(Long id);
 	
-	public List<UserDTO> getUsers();
+	public List<UserDTO> getUsers(int pagesize, int pagenum);
 }
