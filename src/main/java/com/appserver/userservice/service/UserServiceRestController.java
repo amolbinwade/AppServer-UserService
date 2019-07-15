@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.appServer.userService.dto.UserDTO;
 import com.appserver.userservice.errorcodes.UserServiceErrorCodes;
 import com.appserver.userservice.errorresponse.ErrorCodeResponse;
+import com.appserver.userservice.exception.ReqDataMissingApplicationException;
 import com.appserver.userservice.exception.UserApplicationException;
 
 @RestController
@@ -97,6 +98,10 @@ public class UserServiceRestController {
 			case USER_DATA_NOT_PROVIDED:
 				res = new ResponseEntity<Object>(new ErrorCodeResponse(e.getCode().getCode(), 
 						e.getCode().getValue()), HttpStatus.NOT_FOUND);
+				break;
+			case USER_REQUIRED_FIELD_NOT_PROVIDED:
+				res = new ResponseEntity<Object>(new ErrorCodeResponse(e.getCode().getCode(), 
+						e.getCode().getValue()+" : "+e.toString()), HttpStatus.NOT_FOUND);
 				break;
 			default:
 				res = new ResponseEntity<Object>(new ErrorCodeResponse(e.getCode().getCode(), 

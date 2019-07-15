@@ -28,5 +28,16 @@ public class ReqDataMissingApplicationException extends UserApplicationException
 	public List<String> getMissingFields(){
 		return this.missingFields;
 	}
-
+	
+	public String toString(){
+		StringBuffer str = new StringBuffer("Missing Field(s): ");
+		int count = 1;
+		for(String field : this.missingFields){
+			str.append(field);	
+			if(++count <= this.missingFields.size()){
+				str.append(", ");
+			}
+		}
+		return str.toString();
+	}
 }

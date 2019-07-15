@@ -28,7 +28,7 @@ public class Address {
 		this.id = id;
 	}
 	
-	@Column(name="line1")
+	@Column(name="line1", nullable=false)
 	public String getLine1() {
 		return line1;
 	}
@@ -64,7 +64,7 @@ public class Address {
 		this.state = state;
 	}
 	
-	@Column(name="pincode")
+	@Column(name="pincode", nullable=false)
 	public String getPincode() {
 		return pincode;
 	}

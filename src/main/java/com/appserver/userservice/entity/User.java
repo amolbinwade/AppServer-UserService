@@ -35,7 +35,7 @@ public class User {
 		this.id = id;
 	}
 	
-	@Column(name="FIRST_NAME")
+	@Column(name="FIRST_NAME", nullable=false)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -43,7 +43,7 @@ public class User {
 		this.firstName = firstName;
 	}
 	
-	@Column(name="LAST_NAME")
+	@Column(name="LAST_NAME", nullable=false)
 	public String getLastName() {
 		return lastName;
 	}
@@ -61,6 +61,7 @@ public class User {
 		this.middleName = middleName;
 	}
 
+	@Column(name="USER_ID", nullable=false)
 	public String getUserId() {
 		return userId;
 	}
@@ -69,6 +70,7 @@ public class User {
 		this.userId = userId;
 	}
 
+	@Column(name="EMAIL_ID", nullable=false)
 	public String getEmailId() {
 		return emailId;
 	}
